@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Capstone Project Report - Nand to Tetris I</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #24292e;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 30px;
+  }
+  h1 { border-bottom: 2px solid #eaecef; padding-bottom: 10px; color: #1a202c; }
+  h2 { border-bottom: 1px solid #eaecef; padding-bottom: 8px; margin-top: 30px; color: #2d3748; }
+  h3 { color: #4a5568; margin-top: 20px; }
+  table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+  th, td { border: 1px solid #cbd5e0; padding: 10px 14px; text-align: left; }
+  th { background-color: #f7fafc; font-weight: 600; }
+  code { background-color: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: Consolas, monospace; font-size: 0.9em; }
+  pre { background-color: #1e293b; color: #f8fafc; padding: 16px; border-radius: 6px; overflow-x: auto; }
+  pre code { background-color: transparent; color: inherit; padding: 0; }
+  blockquote { border-left: 4px solid #3b82f6; margin: 0; padding-left: 16px; color: #475569; }
+  img { max-width: 100%; border: 1px solid #e2e8f0; border-radius: 6px; margin: 15px 0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+  .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; background: #e0f2fe; color: #0369a1; font-weight: bold; }
+  @media print {
+    body { max-width: 100%; margin: 15mm; }
+    h2 { page-break-before: always; }
+    h2:first-of-type { page-break-before: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<h1>CAPSTONE PROJECT REPORT: MAKE THE COMPUTER DRAW A BOX</h1>
+<p><strong>Course:</strong> Nand to Tetris – I (ETCNTC301)<br>
+<strong>School:</strong> School of Engineering & Technology, K.R. Mangalam University<br>
+<strong>Student Name:</strong> Parikshit Chauhan<br>
+<strong>University Roll Number:</strong> 2501730398<br>
+<strong>Mode:</strong> Individual Work | <strong>Marks:</strong> 10</p>
+
+<h2>1. Student Identity & Personal Number (K)</h2>
+<ul>
+  <li><strong>Full Name:</strong> Parikshit Chauhan</li>
+  <li><strong>Roll Number:</strong> 2501730398</li>
+  <li><strong>Personal Number (K):</strong> Last two digits of roll number = <strong>98</strong></li>
+  <li><strong>Calculated Modulo Parameters:</strong>
+    <ul>
+      <li><code>K mod 3 = 98 mod 3 = 2</code> &rarr; <strong>Additional Feature:</strong> <em>Print a warning if the same label is written twice.</em></li>
+      <li><code>K mod 4 = 98 mod 4 = 2</code> &rarr; <strong>Box Width:</strong> <code>16 &times; ((98 mod 4) + 1) = 16 &times; 3 = 48 pixels</code> (3 words/row).</li>
+      <li><strong>Starting Row:</strong> <code>K = 98</code>.</li>
+      <li><strong>Box Height:</strong> <code>20 screen rows</code> (Rows 98 to 117 inclusive).</li>
+    </ul>
+  </li>
+</ul>
+
+<h2>2. Explanation of Hack Computer Implementation (Part A)</h2>
+<p>The Hack computer is a 16-bit Von Neumann architecture machine comprising three core functional units:</p>
+<h3>2.1 Central Processing Unit (CPU.hdl)</h3>
+<p>The CPU executes 16-bit Hack instructions. A-instructions (bit 15 = 0) load addresses into the A register. C-instructions (bit 15 = 1) execute ALU operations between the D register and A/Memory, route results to target destinations (A, D, M), and evaluate jump logic against status flags (zr, ng) to steer the Program Counter (PC).</p>
+
+<h3>2.2 Memory System (Memory.hdl)</h3>
+<p>Unifies RAM16K (<code>0x0000 - 0x3FFF</code>), Screen memory (<code>0x4000 - 0x5FFF</code>), and Keyboard memory (<code>0x6000</code>). Demultiplexes read and write operations based on upper address bits 14 and 13.</p>
+
+<h3>2.3 Integrated Computer (Computer.hdl)</h3>
+<p>Coordinates ROM32K, CPU, and Memory into an integrated system running stored machine code in real time.</p>
+
+<h2>3. Explanation of Two-Pass Assembler (assembler.py)</h2>
+<ul>
+  <li><strong>Pass One (Label Resolution):</strong> Scans assembly line by line, ignores comments and blanks. Captures labels like <code>(LOOP)</code> and maps them to the upcoming ROM address in the symbol table without consuming ROM cycles.</li>
+  <li><strong>Pass Two (Binary Code Generation):</strong> Re-scans instructions. Translates <code>@value</code> A-instructions into 15-bit binary addresses. Allocates RAM variables starting at RAM address 16. Parses C-instructions into comp, dest, and jump binary fields.</li>
+</ul>
+
+<h2>4. Additional Assembler Feature Based on K</h2>
+<p><strong>Requirement:</strong> For <code>K mod 3 = 2</code>, print a warning if a duplicate label is declared.</p>
+<p><strong>Implementation:</strong> <code>assembler.py</code> keeps a history of defined labels. When a repeated label is found in Pass 1, it outputs:</p>
+<pre><code>[WARNING] Duplicate label '(MY_LOOP)' found at line 14! Label was already defined at line 7 (ROM address 2).</code></pre>
+
+<h2>5. Box Dimensions & Memory Calculations (Part C)</h2>
+<table>
+  <tr><th>Parameter</th><th>Formula / Rule</th><th>Calculated Value</th></tr>
+  <tr><td>Personal Number (K)</td><td>Last 2 digits of 2501730398</td><td><strong>98</strong></td></tr>
+  <tr><td>Starting Row</td><td>K</td><td><strong>Row 98</strong></td></tr>
+  <tr><td>Box Height</td><td>20 screen rows</td><td><strong>20 rows (Rows 98 to 117)</strong></td></tr>
+  <tr><td>Box Width</td><td>16 &times; ((K mod 4) + 1)</td><td><strong>48 pixels</strong></td></tr>
+  <tr><td>Words per Row</td><td>Width / 16</td><td><strong>3 words</strong> (Word 0, 1, 2)</td></tr>
+  <tr><td>Starting Screen Address</td><td>16384 + (32 &times; 98)</td><td><strong>19520</strong></td></tr>
+  <tr><td>Words written per frame</td><td>20 rows &times; 3 words</td><td><strong>60 words</strong> (960 pixels)</td></tr>
+</table>
+
+<h2>6. Official HDL Test Results (Part A)</h2>
+<img src="hdl_test_results.png" alt="HDL Test Verification Results">
+
+<h2>7. Assembler Verification & Test Results (Part B)</h2>
+<img src="assembler_test_results.png" alt="Assembler Test Results">
+
+<h2>8. Working Box Program in CPU Emulator (Part C)</h2>
+<img src="cpu_emulator_box.png" alt="CPU Emulator Screenshot Showing Working Box">
+
+<h2>9. Programming Mistake Encountered & Resolution</h2>
+<p><strong>Encountered Error:</strong> <code>ValueError: Line 85: Invalid comp field 'M+D' in instruction 'M=M+D'</code>.</p>
+<p><strong>Root Cause:</strong> The Hack ALU hardware specifications designate addition as <code>D+M</code> and <code>D+A</code> (with register D as primary). Writing <code>M+D</code> violated strict Hack instruction mnemonics.</p>
+<p><strong>Fix:</strong> Corrected the instruction in <code>Box.asm</code> to <code>M=D+M</code>, and also enhanced <code>assembler.py</code> with commutative aliases (<code>M+D</code>, <code>A+D</code>, etc.) for developer convenience.</p>
+
+</body>
+</html>
