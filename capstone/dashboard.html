@@ -64,7 +64,7 @@
   <!-- Main Content Grid -->
   <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- Left Column: Interactive Hack Screen Simulator -->
+    <!-- Left Column: Interactive Hack Screen Simulator & Registers -->
     <div class="lg:col-span-8 space-y-4">
       <div class="rounded-xl bg-slate-800/80 border border-slate-700/80 p-4">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
@@ -101,26 +101,69 @@
         </div>
       </div>
 
-      <!-- Live CPU & Memory Register State -->
+      <!-- CPU Internal Registers & Memory Telemetry (Includes D and A Registers) -->
       <div class="rounded-xl bg-slate-800/80 border border-slate-700/80 p-4">
-        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Hack CPU & Memory Register Telemetry</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
-          <div class="p-2.5 rounded bg-slate-900 border border-slate-700/80">
-            <span class="text-slate-400 block text-[10px]">RAM[24576] (KBD)</span>
-            <span id="reg-kbd" class="text-sm font-bold text-slate-200">0</span>
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Hack CPU Internal Registers & RAM Telemetry
+          </h3>
+          <span class="text-[10px] font-mono text-sky-400">Live Hardware State</span>
+        </div>
+
+        <!-- Register Cards Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs font-mono">
+          
+          <!-- A Register -->
+          <div class="p-3 rounded-lg bg-slate-900 border-2 border-sky-500/50 shadow-sm relative overflow-hidden">
+            <div class="flex justify-between items-center text-[10px] text-sky-400 font-bold mb-1">
+              <span>A REGISTER</span>
+              <span class="text-[9px] px-1 rounded bg-sky-500/10 border border-sky-500/20">Address / Val</span>
+            </div>
+            <div id="reg-a" class="text-base font-bold text-sky-400">19520</div>
+            <div id="reg-a-desc" class="text-[10px] text-slate-400 mt-0.5 truncate">0x4C40 (Screen Addr)</div>
           </div>
-          <div class="p-2.5 rounded bg-slate-900 border border-slate-700/80">
-            <span class="text-slate-400 block text-[10px]">RAM[16] (color)</span>
-            <span id="reg-color" class="text-sm font-bold text-slate-200">0 (White)</span>
+
+          <!-- D Register -->
+          <div class="p-3 rounded-lg bg-slate-900 border-2 border-emerald-500/50 shadow-sm relative overflow-hidden">
+            <div class="flex justify-between items-center text-[10px] text-emerald-400 font-bold mb-1">
+              <span>D REGISTER</span>
+              <span class="text-[9px] px-1 rounded bg-emerald-500/10 border border-emerald-500/20">Data / ALU</span>
+            </div>
+            <div id="reg-d" class="text-base font-bold text-emerald-400">0</div>
+            <div id="reg-d-desc" class="text-[10px] text-slate-400 mt-0.5 truncate">0x0000 (Idle)</div>
           </div>
-          <div class="p-2.5 rounded bg-slate-900 border border-slate-700/80">
-            <span class="text-slate-400 block text-[10px]">RAM[17] (addr)</span>
-            <span id="reg-addr" class="text-sm font-bold text-slate-200">19520</span>
+
+          <!-- PC Register -->
+          <div class="p-3 rounded-lg bg-slate-900 border border-slate-700/80 shadow-sm">
+            <div class="flex justify-between items-center text-[10px] text-slate-400 font-bold mb-1">
+              <span>PC REGISTER</span>
+              <span class="text-[9px] px-1 rounded bg-slate-800 text-slate-400">ROM Addr</span>
+            </div>
+            <div id="reg-pc" class="text-base font-bold text-purple-400">22</div>
+            <div class="text-[10px] text-slate-400 mt-0.5 truncate">ROW_LOOP Active</div>
           </div>
-          <div class="p-2.5 rounded bg-slate-900 border border-slate-700/80">
-            <span class="text-slate-400 block text-[10px]">RAM[18] (rows_left)</span>
-            <span id="reg-rows" class="text-sm font-bold text-slate-200">20</span>
+
+          <!-- RAM[24576] KBD -->
+          <div class="p-3 rounded-lg bg-slate-900 border border-slate-700/80 shadow-sm">
+            <span class="text-slate-400 block text-[10px] font-bold mb-1">RAM[24576] (KBD)</span>
+            <span id="reg-kbd" class="text-base font-bold text-slate-200">0</span>
+            <div id="reg-kbd-desc" class="text-[10px] text-slate-400 mt-0.5 truncate">No key pressed</div>
           </div>
+
+          <!-- RAM[16] color -->
+          <div class="p-3 rounded-lg bg-slate-900 border border-slate-700/80 shadow-sm">
+            <span class="text-slate-400 block text-[10px] font-bold mb-1">RAM[16] (color)</span>
+            <span id="reg-color" class="text-base font-bold text-slate-200">0</span>
+            <div id="reg-color-desc" class="text-[10px] text-slate-400 mt-0.5 truncate">White / Erase</div>
+          </div>
+
+          <!-- RAM[17] addr & RAM[18] rows -->
+          <div class="p-3 rounded-lg bg-slate-900 border border-slate-700/80 shadow-sm">
+            <span class="text-slate-400 block text-[10px] font-bold mb-1">RAM[17] (addr)</span>
+            <span id="reg-addr" class="text-base font-bold text-slate-200">19520</span>
+            <div id="reg-rows-desc" class="text-[10px] text-slate-400 mt-0.5 truncate">rows_left = 20</div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -168,21 +211,22 @@
         <h2 class="font-semibold text-sm text-white mb-2">5-Minute Viva Voce Cheat Sheet</h2>
         <div class="space-y-2 text-xs">
           <div class="p-2 rounded bg-slate-900 border border-slate-700">
-            <div class="font-semibold text-sky-400 mb-0.5">1. Screen Memory Formula</div>
+            <div class="font-semibold text-sky-400 mb-0.5">1. A and D Register Roles</div>
+            <div class="text-slate-400">
+              <strong>A Register:</strong> Holds memory addresses (15-bit address for RAM/Screen/KBD) and data constants.
+              <strong>D Register:</strong> Holds 16-bit computational data manipulated by ALU operations.
+            </div>
+          </div>
+          <div class="p-2 rounded bg-slate-900 border border-slate-700">
+            <div class="font-semibold text-amber-400 mb-0.5">2. Screen Memory Mapping</div>
             <div class="text-slate-400">
               Screen base = 16384. Row <code>r</code> starts at <code>16384 + (32 × r)</code>. Writing <code>-1</code> turns 16 pixels black; <code>0</code> clears.
             </div>
           </div>
           <div class="p-2 rounded bg-slate-900 border border-slate-700">
-            <div class="font-semibold text-amber-400 mb-0.5">2. K mod 3 Feature</div>
+            <div class="font-semibold text-emerald-400 mb-0.5">3. K mod 3 Feature</div>
             <div class="text-slate-400">
               <code>98 mod 3 = 2</code>: Emits <code>[WARNING] Duplicate label</code> when duplicate <code>(LABEL)</code> appears in Pass 1 without crashing.
-            </div>
-          </div>
-          <div class="p-2 rounded bg-slate-900 border border-slate-700">
-            <div class="font-semibold text-emerald-400 mb-0.5">3. CPU Architecture</div>
-            <div class="text-slate-400">
-              A-instruction (bit 15=0) loads A register. C-instruction (bit 15=1) feeds D and A/M into ALU, evaluates jumps into PC.
             </div>
           </div>
         </div>
@@ -203,10 +247,18 @@
     const ctx = canvas.getContext("2d");
 
     const kbdStatus = document.getElementById("kbd-status");
+    const regA = document.getElementById("reg-a");
+    const regADesc = document.getElementById("reg-a-desc");
+    const regD = document.getElementById("reg-d");
+    const regDDesc = document.getElementById("reg-d-desc");
+    const regPc = document.getElementById("reg-pc");
+
     const regKbd = document.getElementById("reg-kbd");
+    const regKbdDesc = document.getElementById("reg-kbd-desc");
     const regColor = document.getElementById("reg-color");
+    const regColorDesc = document.getElementById("reg-color-desc");
     const regAddr = document.getElementById("reg-addr");
-    const regRows = document.getElementById("reg-rows");
+    const regRowsDesc = document.getElementById("reg-rows-desc");
 
     const sliderRow = document.getElementById("slider-row");
     const sliderWidth = document.getElementById("slider-width");
@@ -244,14 +296,30 @@
       const active = isKeyPressed || isLatched;
       const baseAddr = 16384 + (32 * startRow);
 
-      regKbd.textContent = active ? "75 ('K' Pressed)" : "0";
-      regKbd.className = active ? "text-sm font-bold text-sky-400" : "text-sm font-bold text-slate-200";
+      // A Register
+      regA.textContent = active ? baseAddr.toString() : "24576";
+      regADesc.textContent = active 
+        ? `0x${baseAddr.toString(16).toUpperCase()} (Screen Ptr)` 
+        : "0x6000 (KBD Addr)";
 
-      regColor.textContent = active ? "-1 (0xFFFF / Black)" : "0 (White)";
-      regColor.className = active ? "text-sm font-bold text-emerald-400" : "text-sm font-bold text-slate-200";
+      // D Register
+      regD.textContent = active ? "-1 (0xFFFF)" : "0 (0x0000)";
+      regDDesc.textContent = active 
+        ? "Pixel Mask (All Black)" 
+        : "Key Code = 0 (Idle)";
+
+      // PC Register
+      regPc.textContent = active ? "22" : "1";
+
+      // RAM values
+      regKbd.textContent = active ? "75" : "0";
+      regKbdDesc.textContent = active ? "Key 'K' is Pressed" : "No key pressed";
+
+      regColor.textContent = active ? "-1" : "0";
+      regColorDesc.textContent = active ? "Black (0xFFFF)" : "White (0x0000)";
 
       regAddr.textContent = baseAddr.toString();
-      regRows.textContent = boxHeight.toString();
+      regRowsDesc.textContent = `rows_left = ${boxHeight}`;
 
       if (active) {
         kbdStatus.textContent = "KBD = 75 (KEY PRESSED)";
