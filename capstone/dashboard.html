@@ -5,264 +5,349 @@
   <title>Nand to Tetris Capstone Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    @keyframes float-slow {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-10px) scale(1.02); }
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 0.3; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .glass-panel {
+      background: rgba(6, 44, 30, 0.32);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(16, 185, 129, 0.22);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 0 16px 0 rgba(16, 185, 129, 0.05);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-panel:hover {
+      border-color: rgba(52, 211, 153, 0.45);
+      box-shadow: 0 12px 40px 0 rgba(16, 185, 129, 0.15), inset 0 0 20px 0 rgba(16, 185, 129, 0.08);
+    }
+    .glass-active {
+      background: rgba(6, 78, 50, 0.5) !important;
+      border-color: rgba(52, 211, 153, 0.8) !important;
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.35), inset 0 0 18px rgba(16, 185, 129, 0.2) !important;
+      transform: translateY(-2px);
+    }
     .screen-canvas {
       image-rendering: pixelated;
       image-rendering: crisp-edges;
     }
+    .crt-overlay::after {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.03));
+      z-index: 10;
+      background-size: 100% 3px, 6px 100%;
+      pointer-events: none;
+      opacity: 0.35;
+    }
+    .shimmer-text {
+      background: linear-gradient(90deg, #34d399 0%, #a7f3d0 50%, #34d399 100%);
+      background-size: 200% auto;
+      color: transparent;
+      -webkit-background-clip: text;
+      animation: shimmer 3s linear infinite;
+    }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 p-4 sm:p-6 antialiased min-h-screen">
+<body class="bg-[#03110b] text-emerald-100 p-4 sm:p-6 antialiased min-h-screen relative overflow-x-hidden selection:bg-emerald-500 selection:text-black">
 
-  <!-- Header -->
-  <header class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-800 mb-6 max-w-7xl mx-auto">
-    <div>
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-          ALL TESTS PASSING 100%
-        </span>
-        <span class="text-xs text-slate-400">ETCNTC301 · K.R. Mangalam University</span>
+  <!-- Ambient Glowing Background Orbs -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl animate-[float-slow_8s_ease-in-out_infinite]"></div>
+    <div class="absolute top-1/3 -right-32 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-[float-slow_10s_ease-in-out_infinite_reverse]"></div>
+    <div class="absolute -bottom-32 left-1/4 w-[32rem] h-[32rem] bg-emerald-600/10 rounded-full blur-[100px]"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <header class="glass-panel rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.3)]">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            ALL TESTS PASSING 100%
+          </span>
+          <span class="text-xs text-emerald-400/70 font-mono tracking-wide">ETCNTC301 · K.R. Mangalam University</span>
+        </div>
+        <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight shimmer-text">
+          Hack Computer Capstone Dashboard
+        </h1>
+        <p class="text-xs sm:text-sm text-emerald-300/80 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span>Student: <strong class="text-white font-medium">Parikshit Chauhan</strong></span>
+          <span>·</span>
+          <span>Roll No: <strong class="font-mono text-emerald-300 tracking-wider font-bold">2501730398</strong></span>
+          <span>·</span>
+          <span>Personal Number: <strong class="font-mono font-bold text-teal-300 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">K = 98</strong></span>
+        </p>
       </div>
-      <h1 class="text-xl sm:text-2xl font-bold tracking-tight mt-1 text-white">Hack Computer Capstone Dashboard</h1>
-      <p class="text-xs sm:text-sm text-slate-400">
-        Student: <span class="font-medium text-slate-200">Parikshit Chauhan</span> · 
-        Roll No: <span class="font-mono text-slate-200 font-bold text-emerald-400">2501730398</span> · 
-        Personal Number: <span class="font-mono font-bold text-sky-400">K = 98</span>
-      </p>
-    </div>
-    <div class="flex items-center gap-2">
-      <a href="https://github.com/Parikshit930/Nand2tetris_Capstone" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors text-white">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-        GitHub Repo
-      </a>
-    </div>
-  </header>
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/Parikshit930/Nand2tetris_Capstone" target="_blank" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-emerald-900/40 hover:bg-emerald-800/60 border border-emerald-500/40 text-emerald-200 transition-all duration-300 shadow-md hover:shadow-emerald-500/20 hover:scale-105 active:scale-95">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub Repo
+        </a>
+      </div>
+    </header>
 
-  <!-- Live Roll Number & Keyboard State Alert Banner -->
-  <div id="roll-banner" class="max-w-7xl mx-auto mb-5 p-3 rounded-xl border border-dashed transition-all duration-200 flex items-center justify-between bg-slate-900/60 border-slate-700">
-    <div class="flex items-center gap-3">
-      <div id="roll-pulse" class="w-3 h-3 rounded-full bg-slate-600"></div>
-      <div>
-        <div class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Keyboard State & Roll Number Verification</div>
-        <div id="roll-readout" class="text-sm sm:text-base font-mono font-bold text-slate-400">
-          Press any key (or key 'b' for K=98) to trigger KBD value
+    <!-- Glowing Live Roll Number & Keyboard Trigger Alert Banner -->
+    <div id="roll-banner" class="glass-panel rounded-2xl p-4 transition-all duration-300 flex flex-wrap items-center justify-between gap-4 border-dashed border-emerald-500/30">
+      <div class="flex items-center gap-3.5">
+        <div id="roll-pulse" class="w-3.5 h-3.5 rounded-full bg-emerald-600/60 transition-all duration-300"></div>
+        <div>
+          <div class="text-[11px] font-bold text-emerald-400/80 uppercase tracking-widest flex items-center gap-2">
+            <span>Hardware Keyboard Scan Code Intercept</span>
+            <span class="w-1 h-1 rounded-full bg-emerald-500"></span>
+            <span class="text-emerald-300">K = 98</span>
+          </div>
+          <div id="roll-readout" class="text-sm sm:text-base font-mono font-bold text-emerald-200/80 transition-all duration-300">
+            Press any physical key (or button) to assert RAM[24576] = 98 & display roll number
+          </div>
         </div>
       </div>
+      <div id="roll-badge" class="font-mono text-xs px-3 py-1.5 rounded-xl bg-emerald-950/70 text-emerald-400 border border-emerald-500/30 transition-all duration-300 shadow-sm">
+        KBD = 0 (IDLE)
+      </div>
     </div>
-    <div id="roll-badge" class="font-mono text-xs px-2.5 py-1 rounded-md bg-slate-800 text-slate-400 border border-slate-700">
-      KBD = 0
-    </div>
-  </div>
 
-  <!-- Metrics Grid -->
-  <div class="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-    <div class="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700/80">
-      <div class="text-[11px] font-medium text-slate-400">Keyboard State Value (K)</div>
-      <div class="text-xl font-bold font-mono mt-1 text-emerald-400" id="stat-kbd-val">KBD = 98</div>
-      <div class="text-[10px] text-slate-400 mt-0.5">Last 2 digits of 2501730398</div>
-    </div>
-    <div class="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700/80">
-      <div class="text-[11px] font-medium text-slate-400">Starting Row (K)</div>
-      <div class="text-xl font-bold font-mono mt-1 text-sky-400" id="stat-row">Row 98</div>
-      <div class="text-[10px] text-slate-400 mt-0.5">SCREEN + 32 × 98 = 19520</div>
-    </div>
-    <div class="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700/80">
-      <div class="text-[11px] font-medium text-slate-400">Box Dimensions</div>
-      <div class="text-xl font-bold font-mono mt-1 text-amber-400">48 × 20 px</div>
-      <div class="text-[10px] text-slate-400 mt-0.5">3 words (48 px) × 20 rows</div>
-    </div>
-    <div class="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700/80">
-      <div class="text-[11px] font-medium text-slate-400">K mod 3 Feature</div>
-      <div class="text-xl font-bold font-mono mt-1 text-purple-400">K mod 3 = 2</div>
-      <div class="text-[10px] text-slate-400 mt-0.5">Duplicate Label Warning</div>
-    </div>
-  </div>
+    <!-- Quick Stats Metric Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+      <div class="glass-panel rounded-xl p-3.5">
+        <div class="text-[11px] font-medium text-emerald-400/70">Keyboard State Value (K)</div>
+        <div class="text-xl font-bold font-mono mt-1 text-emerald-300 flex items-center gap-2" id="stat-kbd-val">
+          <span>KBD = 98</span>
+          <span class="text-xs px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-normal">0x0062</span>
+        </div>
+        <div class="text-[10px] text-emerald-400/60 mt-0.5">Last 2 digits of Roll 2501730398</div>
+      </div>
 
-  <!-- Main Content Grid -->
-  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="glass-panel rounded-xl p-3.5">
+        <div class="text-[11px] font-medium text-emerald-400/70">Starting Row (K)</div>
+        <div class="text-xl font-bold font-mono mt-1 text-teal-300" id="stat-row">Row 98</div>
+        <div class="text-[10px] text-emerald-400/60 mt-0.5 font-mono">SCREEN + 32 × 98 = 19520</div>
+      </div>
 
-    <!-- Left Column: Interactive Hack Screen Simulator & Registers -->
-    <div class="lg:col-span-8 space-y-4">
-      <div class="rounded-xl bg-slate-800/80 border border-slate-700/80 p-4">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <h2 class="font-semibold text-sm text-white">Interactive Hack Screen Display (512 × 256)</h2>
+      <div class="glass-panel rounded-xl p-3.5">
+        <div class="text-[11px] font-medium text-emerald-400/70">Box Geometry</div>
+        <div class="text-xl font-bold font-mono mt-1 text-amber-300">48 × 20 px</div>
+        <div class="text-[10px] text-emerald-400/60 mt-0.5">3 words (48 px) × 20 rows</div>
+      </div>
+
+      <div class="glass-panel rounded-xl p-3.5">
+        <div class="text-[11px] font-medium text-emerald-400/70">K mod 3 Feature</div>
+        <div class="text-xl font-bold font-mono mt-1 text-purple-300">K mod 3 = 2</div>
+        <div class="text-[10px] text-emerald-400/60 mt-0.5">Duplicate Label Warning</div>
+      </div>
+    </div>
+
+    <!-- Main Grid: Left Screen + Telemetry, Right Viva Voce Controls -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Left Column: Interactive Hack Display & Registers -->
+      <div class="lg:col-span-8 space-y-5">
+        <div class="glass-panel rounded-2xl p-4 sm:p-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-3.5">
+            <div class="flex items-center gap-2.5">
+              <span class="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_10px_#10b981] animate-pulse"></span>
+              <h2 class="font-bold text-sm tracking-wide text-white">Interactive Hack Screen Display (512 × 256)</h2>
+            </div>
+            <div class="flex items-center gap-2 text-xs font-mono">
+              <span class="text-emerald-400/70">KBD State:</span>
+              <span id="kbd-status" class="px-2.5 py-1 rounded-lg text-[11px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 transition-all duration-300">
+                KBD = 0 (Released)
+              </span>
+            </div>
           </div>
-          <div class="flex items-center gap-2 text-xs">
-            <span class="text-slate-400">Keyboard state:</span>
-            <span id="kbd-status" class="font-mono px-2.5 py-0.5 rounded text-[11px] bg-slate-900 text-slate-300 border border-slate-700">
-              KBD = 0 (Released)
+
+          <!-- Hack Screen Canvas Container with Subtle CRT Phosphor Overlay -->
+          <div class="relative rounded-xl border-2 border-emerald-500/40 overflow-hidden shadow-2xl bg-white p-1.5 crt-overlay">
+            <canvas id="hack-screen" width="512" height="256" class="screen-canvas w-full max-w-[512px] h-auto border border-neutral-300 bg-white mx-auto block"></canvas>
+          </div>
+
+          <!-- Interactive Action Controls with Motion Effects -->
+          <div class="mt-4 pt-3.5 border-t border-emerald-500/20 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+              <button id="btn-press-key" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-95 text-white transition-all duration-200 shadow-[0_0_20px_rgba(16,185,129,0.35)] flex items-center gap-2 cursor-pointer">
+                <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                Press & Hold Key (KBD = 98)
+              </button>
+              <button id="btn-toggle-key" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-500/30 text-emerald-200 transition-all duration-200 active:scale-95 cursor-pointer">
+                Toggle Latch
+              </button>
+            </div>
+            <div class="text-[11px] text-emerald-300/80 flex items-center gap-1.5">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              Press any physical keyboard key to assert <strong class="text-emerald-300 font-mono">KBD = 98</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- CPU Internal Registers & Memory Telemetry (A, D, PC, RAM) with Translucent Glow -->
+        <div class="glass-panel rounded-2xl p-4 sm:p-5">
+          <div class="flex items-center justify-between mb-3.5">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-sm bg-emerald-400"></div>
+              <h3 class="text-xs font-bold text-emerald-300 uppercase tracking-widest">
+                Hack CPU Registers & RAM Telemetry
+              </h3>
+            </div>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+              Live Hardware State
             </span>
           </div>
-        </div>
 
-        <!-- Hack Screen Canvas -->
-        <div class="relative bg-white rounded border-2 border-slate-600 overflow-hidden shadow-inner flex items-center justify-center p-1">
-          <canvas id="hack-screen" width="512" height="256" class="screen-canvas w-full max-w-[512px] h-auto border border-neutral-300 bg-white"></canvas>
-        </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs font-mono">
 
-        <!-- Interactive Simulation Controls -->
-        <div class="mt-4 pt-3 border-t border-slate-700/80 flex flex-wrap items-center justify-between gap-3">
-          <div class="flex items-center gap-2">
-            <button id="btn-press-key" class="px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white transition-all shadow-sm">
-              Press & Hold Key (KBD = 98)
-            </button>
-            <button id="btn-toggle-key" class="px-3 py-2 rounded-lg text-xs font-medium bg-slate-700 hover:bg-slate-600 border border-slate-600 transition-colors text-white">
-              Toggle Key (Latch)
-            </button>
-          </div>
-          <div class="text-[11px] text-slate-400">
-            Press any physical key (or 'b') &rarr; <strong class="text-emerald-400">KBD = 98</strong> & <strong class="text-emerald-400">Roll No: 2501730398</strong>
-          </div>
-        </div>
-      </div>
-
-      <!-- CPU Internal Registers & Memory Telemetry (Includes D and A Registers) -->
-      <div class="rounded-xl bg-slate-800/80 border border-slate-700/80 p-4">
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-            Hack CPU Internal Registers & RAM Telemetry
-          </h3>
-          <span class="text-[10px] font-mono text-emerald-400">RAM[24576] = 98 (Active)</span>
-        </div>
-
-        <!-- Register Cards Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs font-mono">
-          
-          <!-- RAM[24576] KBD (Highlighted) -->
-          <div class="p-3 rounded-lg bg-slate-900 border-2 border-amber-500/50 shadow-sm relative overflow-hidden">
-            <div class="flex justify-between items-center text-[10px] text-amber-400 font-bold mb-1">
-              <span>RAM[24576] (KBD)</span>
-              <span class="text-[9px] px-1 rounded bg-amber-500/10 border border-amber-500/20">Key Register</span>
+            <!-- A Register Card -->
+            <div id="card-reg-a" class="glass-panel p-3.5 rounded-xl relative overflow-hidden transition-all duration-300">
+              <div class="flex justify-between items-center text-[10px] text-sky-400 font-bold mb-1">
+                <span>A REGISTER</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded bg-sky-500/10 border border-sky-500/20">Address</span>
+              </div>
+              <div id="reg-a" class="text-lg font-bold text-sky-300">19520</div>
+              <div id="reg-a-desc" class="text-[10px] text-emerald-400/60 mt-0.5 truncate">0x4C40 (Screen Addr)</div>
             </div>
-            <div id="reg-kbd" class="text-base font-bold text-neutral-300">0</div>
-            <div id="reg-kbd-desc" class="text-[10px] text-slate-400 mt-0.5 truncate">0 (Key Released)</div>
-          </div>
 
-          <!-- D Register -->
-          <div class="p-3 rounded-lg bg-slate-900 border-2 border-emerald-500/50 shadow-sm relative overflow-hidden">
-            <div class="flex justify-between items-center text-[10px] text-emerald-400 font-bold mb-1">
-              <span>D REGISTER</span>
-              <span class="text-[9px] px-1 rounded bg-emerald-500/10 border border-emerald-500/20">Data / ALU</span>
+            <!-- D Register Card -->
+            <div id="card-reg-d" class="glass-panel p-3.5 rounded-xl relative overflow-hidden transition-all duration-300">
+              <div class="flex justify-between items-center text-[10px] text-emerald-400 font-bold mb-1">
+                <span>D REGISTER</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">ALU Data</span>
+              </div>
+              <div id="reg-d" class="text-lg font-bold text-emerald-300">0</div>
+              <div id="reg-d-desc" class="text-[10px] text-emerald-400/60 mt-0.5 truncate">0x0000 (Idle)</div>
             </div>
-            <div id="reg-d" class="text-base font-bold text-emerald-400">0</div>
-            <div id="reg-d-desc" class="text-[10px] text-slate-400 mt-0.5 truncate">0x0000 (Idle)</div>
-          </div>
 
-          <!-- A Register -->
-          <div class="p-3 rounded-lg bg-slate-900 border-2 border-sky-500/50 shadow-sm relative overflow-hidden">
-            <div class="flex justify-between items-center text-[10px] text-sky-400 font-bold mb-1">
-              <span>A REGISTER</span>
-              <span class="text-[9px] px-1 rounded bg-sky-500/10 border border-sky-500/20">Address / Val</span>
+            <!-- PC Register Card -->
+            <div class="glass-panel p-3.5 rounded-xl">
+              <div class="flex justify-between items-center text-[10px] text-purple-400 font-bold mb-1">
+                <span>PC REGISTER</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20">ROM Addr</span>
+              </div>
+              <div id="reg-pc" class="text-lg font-bold text-purple-300">22</div>
+              <div class="text-[10px] text-emerald-400/60 mt-0.5 truncate">ROW_LOOP Execution</div>
             </div>
-            <div id="reg-a" class="text-base font-bold text-sky-400">19520</div>
-            <div id="reg-a-desc" class="text-[10px] text-slate-400 mt-0.5 truncate">0x4C40 (Screen Addr)</div>
-          </div>
 
-          <!-- PC Register -->
-          <div class="p-3 rounded-lg bg-slate-900 border border-slate-700/80 shadow-sm">
-            <div class="flex justify-between items-center text-[10px] text-slate-400 font-bold mb-1">
-              <span>PC REGISTER</span>
-              <span class="text-[9px] px-1 rounded bg-slate-800 text-slate-400">ROM Addr</span>
+            <!-- RAM[24576] KBD Card -->
+            <div id="card-reg-kbd" class="glass-panel p-3.5 rounded-xl border-amber-500/40">
+              <div class="flex justify-between items-center text-[10px] text-amber-400 font-bold mb-1">
+                <span>RAM[24576] (KBD)</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">Scan Code</span>
+              </div>
+              <div id="reg-kbd" class="text-lg font-bold text-amber-300">0</div>
+              <div id="reg-kbd-desc" class="text-[10px] text-emerald-400/60 mt-0.5 truncate">0 (Key Released)</div>
             </div>
-            <div id="reg-pc" class="text-base font-bold text-purple-400">22</div>
-            <div class="text-[10px] text-slate-400 mt-0.5 truncate">ROW_LOOP Active</div>
-          </div>
 
-          <!-- RAM[16] color -->
-          <div class="p-3 rounded-lg bg-slate-900 border border-slate-700/80 shadow-sm">
-            <span class="text-slate-400 block text-[10px] font-bold mb-1">RAM[16] (color)</span>
-            <span id="reg-color" class="text-base font-bold text-slate-200">0</span>
-            <div id="reg-color-desc" class="text-[10px] text-slate-400 mt-0.5 truncate">White / Erase</div>
-          </div>
-
-          <!-- RAM[17] addr & RAM[18] rows -->
-          <div class="p-3 rounded-lg bg-slate-900 border border-slate-700/80 shadow-sm">
-            <span class="text-slate-400 block text-[10px] font-bold mb-1">RAM[17] (addr)</span>
-            <span id="reg-addr" class="text-base font-bold text-slate-200">19520</span>
-            <div id="reg-rows-desc" class="text-[10px] text-slate-400 mt-0.5 truncate">rows_left = 20</div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Column: Viva Simulator & Controls -->
-    <div class="lg:col-span-4 space-y-4">
-      <!-- Viva Live Modification Simulator -->
-      <div class="rounded-xl bg-slate-800/80 border border-slate-700/80 p-4">
-        <div class="flex items-center justify-between mb-2">
-          <h2 class="font-semibold text-sm text-white">Viva Code Modification</h2>
-          <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">Viva Demo</span>
-        </div>
-        <p class="text-xs text-slate-400 mb-3">
-          If the examiner asks: <em>"Move the box down or change position"</em>, test the live address calculation below:
-        </p>
-
-        <div class="space-y-3">
-          <div>
-            <div class="flex justify-between text-xs mb-1 font-mono">
-              <span class="text-slate-400">Starting Row:</span>
-              <span id="viva-row-val" class="font-bold text-sky-400">98 (Original K)</span>
+            <!-- RAM[16] Color Card -->
+            <div class="glass-panel p-3.5 rounded-xl">
+              <span class="text-emerald-400/80 block text-[10px] font-bold mb-1">RAM[16] (color)</span>
+              <span id="reg-color" class="text-lg font-bold text-emerald-300">0</span>
+              <div id="reg-color-desc" class="text-[10px] text-emerald-400/60 mt-0.5 truncate">White / Erase</div>
             </div>
-            <input id="slider-row" type="range" min="0" max="235" value="98" class="w-full accent-sky-500 cursor-pointer">
-          </div>
 
-          <div>
-            <div class="flex justify-between text-xs mb-1 font-mono">
-              <span class="text-slate-400">Box Width:</span>
-              <span id="viva-width-val" class="font-bold text-emerald-400">48 px (3 words)</span>
+            <!-- RAM[17] Addr Card -->
+            <div class="glass-panel p-3.5 rounded-xl">
+              <span class="text-emerald-400/80 block text-[10px] font-bold mb-1">RAM[17] (addr)</span>
+              <span id="reg-addr" class="text-lg font-bold text-emerald-300">19520</span>
+              <div id="reg-rows-desc" class="text-[10px] text-emerald-400/60 mt-0.5 truncate">rows_left = 20</div>
             </div>
-            <input id="slider-width" type="range" min="1" max="4" value="3" class="w-full accent-emerald-500 cursor-pointer">
-          </div>
 
-          <!-- Generated Code Snippet for Viva -->
-          <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-700 text-[11px] font-mono">
-            <div class="text-[10px] text-slate-400 mb-1">Generated Hack ASM line in Box.asm:</div>
-            <div id="viva-code-asm" class="text-emerald-400 font-bold">@19520 // 16384 + (32 * 98)</div>
-            <div class="text-[10px] text-slate-400 mt-1">D=A<br>@addr<br>M=D</div>
           </div>
         </div>
       </div>
 
-      <!-- Quick Viva Cheat Sheet Card -->
-      <div class="rounded-xl bg-slate-800/80 border border-slate-700/80 p-4">
-        <h2 class="font-semibold text-sm text-white mb-2">5-Minute Viva Voce Cheat Sheet</h2>
-        <div class="space-y-2 text-xs">
-          <div class="p-2 rounded bg-slate-900 border border-slate-700">
-            <div class="font-semibold text-emerald-400 mb-0.5">Keyboard State Value: 98</div>
-            <div class="text-slate-400">
-              When key is pressed, <code>RAM[24576] (KBD) = 98</code> (matches roll number last 2 digits $K = 98$, ASCII for 'b').
-            </div>
+      <!-- Right Column: Viva Voce Interactive Simulator -->
+      <div class="lg:col-span-4 space-y-5">
+        <div class="glass-panel rounded-2xl p-4 sm:p-5">
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="font-bold text-sm tracking-wide text-white">Viva Code Modification</h2>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold">
+              Live Demo
+            </span>
           </div>
-          <div class="p-2 rounded bg-slate-900 border border-slate-700">
-            <div class="font-semibold text-sky-400 mb-0.5">1. A and D Register Roles</div>
-            <div class="text-slate-400">
-              <strong>A Register:</strong> Holds 15-bit address (RAM/Screen/KBD). <strong>D Register:</strong> Holds 16-bit computational/ALU data.
+          <p class="text-xs text-emerald-300/70 mb-4">
+            If the examiner asks: <em>"Move the box down or change width"</em>, use these interactive sliders to recalculate addresses and ASM code in real-time:
+          </p>
+
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs mb-1.5 font-mono">
+                <span class="text-emerald-300/70">Starting Row:</span>
+                <span id="viva-row-val" class="font-bold text-teal-300">98 (Original K)</span>
+              </div>
+              <input id="slider-row" type="range" min="0" max="235" value="98" class="w-full accent-emerald-400 cursor-pointer h-2 bg-emerald-950 rounded-lg">
             </div>
-          </div>
-          <div class="p-2 rounded bg-slate-900 border border-slate-700">
-            <div class="font-semibold text-amber-400 mb-0.5">2. Screen Memory Mapping</div>
-            <div class="text-slate-400">
-              Screen base = 16384. Row <code>r</code> starts at <code>16384 + (32 × r)</code>. Row 98 = <code>19520</code>. Writing <code>-1</code> turns 16 pixels black; <code>0</code> clears.
+
+            <div>
+              <div class="flex justify-between text-xs mb-1.5 font-mono">
+                <span class="text-emerald-300/70">Box Width:</span>
+                <span id="viva-width-val" class="font-bold text-amber-300">48 px (3 words)</span>
+              </div>
+              <input id="slider-width" type="range" min="1" max="4" value="3" class="w-full accent-amber-400 cursor-pointer h-2 bg-emerald-950 rounded-lg">
+            </div>
+
+            <!-- Dynamic Hack ASM Code Snippet -->
+            <div class="p-3.5 rounded-xl bg-black/40 border border-emerald-500/30 text-[11px] font-mono space-y-1">
+              <div class="text-[10px] text-emerald-400/60">Dynamic Hack ASM line in Box.asm:</div>
+              <div id="viva-code-asm" class="text-emerald-300 font-bold text-xs">@19520 // 16384 + (32 * 98)</div>
+              <div class="text-[10px] text-emerald-400/70">D=A<br>@addr<br>M=D</div>
             </div>
           </div>
         </div>
+
+        <!-- Viva Voce Fast Answers Cheat Sheet -->
+        <div class="glass-panel rounded-2xl p-4 sm:p-5">
+          <h2 class="font-bold text-sm tracking-wide text-white mb-3">5-Minute Viva Voce Cheat Sheet</h2>
+          <div class="space-y-2.5 text-xs">
+            <div class="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/20">
+              <div class="font-bold text-emerald-300 mb-0.5">1. Keyboard State Value: 98</div>
+              <div class="text-emerald-400/70">
+                When a key is pressed, <code>RAM[24576] (KBD) = 98</code> (Roll No last 2 digits $K = 98$, ASCII for 'b').
+              </div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/20">
+              <div class="font-bold text-teal-300 mb-0.5">2. A and D Register Roles</div>
+              <div class="text-emerald-400/70">
+                <strong>A Register:</strong> Holds 15-bit address (RAM/Screen/KBD).<br>
+                <strong>D Register:</strong> Holds computational ALU data.
+              </div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/20">
+              <div class="font-bold text-amber-300 mb-0.5">3. Screen Memory Geometry</div>
+              <div class="text-emerald-400/70">
+                Row <code>r</code> starts at <code>16384 + (32 × r)</code>. Writing <code>-1</code> makes 16 pixels black; <code>0</code> clears.
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
+
     </div>
 
   </div>
 
   <script>
-    // State
+    // Student Identity Parameters
     const studentRollNo = "2501730398";
-    const kValue = 98; // Last 2 digits of Roll No
+    const kValue = 98; // Last 2 digits of Roll Number
     let startRow = 98;
     let wordWidth = 3; // 48 pixels
     const boxHeight = 20;
     let isKeyPressed = false;
     let isLatched = false;
 
+    // Elements
     const canvas = document.getElementById("hack-screen");
     const ctx = canvas.getContext("2d");
 
@@ -285,6 +370,10 @@
     const regAddr = document.getElementById("reg-addr");
     const regRowsDesc = document.getElementById("reg-rows-desc");
 
+    const cardRegA = document.getElementById("card-reg-a");
+    const cardRegD = document.getElementById("card-reg-d");
+    const cardRegKbd = document.getElementById("card-reg-kbd");
+
     const sliderRow = document.getElementById("slider-row");
     const sliderWidth = document.getElementById("slider-width");
     const vivaRowVal = document.getElementById("viva-row-val");
@@ -300,7 +389,7 @@
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, 512, 256);
 
-      // Draw subtle grid guides
+      // Subtle hardware grid lines
       ctx.strokeStyle = "#e2e8f0";
       ctx.lineWidth = 1;
       for (let x = 0; x < 512; x += 32) {
@@ -312,47 +401,41 @@
 
       const active = isKeyPressed || isLatched;
       const pxWidth = wordWidth * 16;
+      const baseAddr = 16384 + (32 * startRow);
 
-      // If key is pressed, draw the black rectangular box
+      // Render the Black Rectangular Box
       if (active) {
         ctx.fillStyle = "#000000";
         ctx.fillRect(0, startRow, pxWidth, boxHeight);
 
-        // Prominently render the student roll number and KBD = 98 on Hack screen
-        ctx.fillStyle = "#0f172a";
+        // Motion HUD Indicator line & Roll Number
+        ctx.fillStyle = "#022c22";
         ctx.font = "bold 13px monospace";
         ctx.fillText(`◄ KBD = ${kValue} | ROLL NO: ${studentRollNo}`, pxWidth + 12, startRow + 15);
 
-        // Subtle guide indicator line
+        // Neon emerald pulse indicator line
         ctx.strokeStyle = "#10b981";
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         ctx.beginPath();
         ctx.moveTo(pxWidth + 2, startRow + 10);
         ctx.lineTo(pxWidth + 10, startRow + 10);
         ctx.stroke();
       }
 
-      // Update register telemetry
-      const baseAddr = 16384 + (32 * startRow);
-
-      // A Register
+      // Live Register Telemetry
       regA.textContent = active ? baseAddr.toString() : "24576";
       regADesc.textContent = active 
         ? `0x${baseAddr.toString(16).toUpperCase()} (Screen Addr)` 
         : "0x6000 (KBD Addr)";
 
-      // D Register
       regD.textContent = active ? "-1 (0xFFFF)" : "0 (0x0000)";
       regDDesc.textContent = active 
         ? "Pixel Mask (All Black)" 
         : "Idle (Key Code = 0)";
 
-      // PC Register
       regPc.textContent = active ? "22" : "1";
 
-      // RAM values - KBD is strictly 98 when pressed
       regKbd.textContent = active ? kValue.toString() : "0";
-      regKbd.className = active ? "text-base font-bold text-amber-400" : "text-base font-bold text-slate-200";
       regKbdDesc.textContent = active ? `Key Code = ${kValue} (K = ${kValue} / 'b')` : "0 (Key Released)";
 
       regColor.textContent = active ? "-1" : "0";
@@ -361,25 +444,33 @@
       regAddr.textContent = baseAddr.toString();
       regRowsDesc.textContent = `rows_left = ${boxHeight}`;
 
-      // Update Top Roll Number & Keyboard State Banner
+      // Motion & Glassmorphic State Updates
       if (active) {
         kbdStatus.textContent = `KBD = ${kValue} (KEY PRESSED)`;
-        kbdStatus.className = "font-mono px-2.5 py-0.5 rounded text-[11px] bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold";
+        kbdStatus.className = "px-2.5 py-1 rounded-lg text-[11px] bg-emerald-500/30 text-emerald-200 border border-emerald-400/60 font-bold shadow-[0_0_12px_rgba(16,185,129,0.4)]";
 
-        rollBanner.className = "max-w-7xl mx-auto mb-5 p-3 rounded-xl border-2 transition-all duration-200 flex items-center justify-between bg-emerald-950/40 border-emerald-500/60 shadow-lg shadow-emerald-500/10";
-        rollPulse.className = "w-3 h-3 rounded-full bg-emerald-400 animate-ping";
-        rollReadout.innerHTML = `KEY PRESSED &rarr; <strong class="text-amber-400">KBD = ${kValue}</strong> &bull; <strong class="text-emerald-400">ROLL NO: ${studentRollNo}</strong> (Parikshit Chauhan | K = ${kValue})`;
-        rollBadge.textContent = `KBD = ${kValue}`;
-        rollBadge.className = "font-mono text-xs px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold";
+        rollBanner.className = "glass-panel glass-active rounded-2xl p-4 transition-all duration-300 flex flex-wrap items-center justify-between gap-4 border-emerald-400/60";
+        rollPulse.className = "w-3.5 h-3.5 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399] animate-ping";
+        rollReadout.innerHTML = `KEY ASSERTED &rarr; <strong class="text-amber-300 font-mono">KBD = ${kValue}</strong> &bull; <strong class="text-emerald-300 font-mono text-base">ROLL NO: ${studentRollNo}</strong> (Parikshit Chauhan | K = ${kValue})`;
+        rollBadge.textContent = `KBD = ${kValue} (ACTIVE)`;
+        rollBadge.className = "font-mono text-xs px-3 py-1.5 rounded-xl bg-emerald-500/30 text-emerald-200 border border-emerald-400/50 font-bold shadow-[0_0_12px_rgba(16,185,129,0.3)]";
+
+        cardRegA.classList.add("glass-active");
+        cardRegD.classList.add("glass-active");
+        cardRegKbd.classList.add("glass-active");
       } else {
         kbdStatus.textContent = "KBD = 0 (Released)";
-        kbdStatus.className = "font-mono px-2.5 py-0.5 rounded text-[11px] bg-slate-900 text-slate-300 border border-slate-700";
+        kbdStatus.className = "px-2.5 py-1 rounded-lg text-[11px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30";
 
-        rollBanner.className = "max-w-7xl mx-auto mb-5 p-3 rounded-xl border border-dashed transition-all duration-200 flex items-center justify-between bg-slate-900/60 border-slate-700";
-        rollPulse.className = "w-3 h-3 rounded-full bg-slate-600";
-        rollReadout.textContent = "Press any key (or key 'b' for K=98) to trigger KBD value";
-        rollBadge.textContent = "KBD = 0";
-        rollBadge.className = "font-mono text-xs px-2.5 py-1 rounded-md bg-slate-800 text-slate-400 border border-slate-700";
+        rollBanner.className = "glass-panel rounded-2xl p-4 transition-all duration-300 flex flex-wrap items-center justify-between gap-4 border-dashed border-emerald-500/30";
+        rollPulse.className = "w-3.5 h-3.5 rounded-full bg-emerald-600/60";
+        rollReadout.textContent = "Press any physical key (or button) to assert RAM[24576] = 98 & display roll number";
+        rollBadge.textContent = "KBD = 0 (IDLE)";
+        rollBadge.className = "font-mono text-xs px-3 py-1.5 rounded-xl bg-emerald-950/70 text-emerald-400 border border-emerald-500/30 shadow-sm";
+
+        cardRegA.classList.remove("glass-active");
+        cardRegD.classList.remove("glass-active");
+        cardRegKbd.classList.remove("glass-active");
       }
     }
 
@@ -406,12 +497,12 @@
     btnToggle.addEventListener("click", () => {
       isLatched = !isLatched;
       btnToggle.className = isLatched 
-        ? "px-3 py-2 rounded-lg text-xs font-semibold bg-emerald-600 text-white transition-colors"
-        : "px-3 py-2 rounded-lg text-xs font-medium bg-slate-700 hover:bg-slate-600 border border-slate-600 transition-colors text-white";
+        ? "px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-500 text-black shadow-[0_0_20px_#10b981] transition-all duration-200"
+        : "px-4 py-2.5 rounded-xl text-xs font-semibold bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-500/30 text-emerald-200 transition-all duration-200";
       renderScreen();
     });
 
-    // Keyboard event listeners
+    // Physical Keyboard Listeners
     window.addEventListener("keydown", (e) => {
       if (!isKeyPressed) {
         isKeyPressed = true;
@@ -424,7 +515,7 @@
       renderScreen();
     });
 
-    // Initial render
+    // Initial Render
     renderScreen();
   </script>
 </body>
