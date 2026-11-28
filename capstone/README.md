@@ -65,6 +65,29 @@ Verified 100% bit-for-bit equivalence on all benchmark programs and duplicate la
 
 ---
 
+## 🌟 Interactive Live Dashboard (`dashboard.html`)
+
+An interactive web-based simulator and demonstration dashboard is included in the project:
+- **Emerald Glassmorphic UI:** Built with translucent glass containers, ambient floating green energy orbs, and CRT phosphor scanlines.
+- **Live Canvas Simulation:** High-fidelity 512×256 CRT display showing the $48 \times 20$ black box rendering at Row 98 in real time.
+- **Real-Time Register Telemetry:** Continuously tracks:
+  - **A Register:** Memory address pointer (`19520` / `0x4C40`).
+  - **D Register:** Pixel pattern (`-1` / `0xFFFF` on keypress, `0` on release).
+  - **PC:** Program counter (`22`).
+  - **RAM[24576] (KBD):** Shows student personal code **`98`** when active.
+  - **RAM[16]–[18]:** Dynamic variables `color`, `addr`, and `rows_left`.
+- **Keyboard Latch & HUD:** Interactive key trigger displaying the active overlay:
+  $$\text{◄ KBD = 98 | ROLL NO: 2501730398}$$
+- **Multi-Part Walkthrough Tabs:** Full technical explanations for **Part A (HDL)**, **Part B (Assembler)**, **Part C (Box Program)**, and the **10/10 Rubric Checklist**.
+
+To run the dashboard locally:
+```bash
+python -m http.server 8080
+# Open http://localhost:8080/dashboard.html in your web browser
+```
+
+---
+
 ## 📁 Repository Structure
 
 ```text
@@ -77,6 +100,7 @@ Verified 100% bit-for-bit equivalence on all benchmark programs and duplicate la
 │   ├── assembler.py                  # Two-pass Hack Assembler in Python
 │   ├── Box.asm                       # Box program source code in Hack assembly
 │   ├── Box.hack                      # Compiled 16-bit binary machine code
+│   ├── dashboard.html                # Interactive glassmorphic simulation dashboard
 │   ├── test_assembler.py             # Automated test suite for the assembler
 │   ├── verify_box.py                 # Emulated test bench for Box program
 │   ├── simulate_hdl.py               # Automated test bench for HDL components
@@ -85,6 +109,7 @@ Verified 100% bit-for-bit equivalence on all benchmark programs and duplicate la
 │   ├── CAPSTONE_PROJECT_REPORT.html  # Print-ready HTML report (Ctrl+P -> PDF)
 │   ├── VIVA_PREPARATION_GUIDE.md     # 5-minute viva voce preparation sheet
 │   └── *.png                         # High-resolution test and emulator screenshots
+├── dashboard.html                    # Root dashboard file
 ├── Add.asm, Max.asm, Rect.asm, Pong.asm # Standard test assembly programs
 ├── README.md                         # Project documentation
 └── ...
